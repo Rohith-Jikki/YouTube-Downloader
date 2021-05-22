@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QFormLayout, QInputDialog, QLineEdit, QMainWindow
+from PyQt5.QtWidgets import QApplication, QFormLayout, QLineEdit, QMainWindow, QLabel
 from pytube import YouTube
 import sys
 
@@ -11,17 +11,20 @@ class MainWindow(QMainWindow):
         self.initUI()
         
     def initUI(self):
-        self.b1 = QtWidgets.QPushButton(self)
-        self.b2 = QtWidgets.QPushButton(self)
+        self.nameLabel = QLabel(self)
+        self.nameLabel.setText('Enter Link:')
+        self.nameLabel.move(0, 0)
         self.textbox = QLineEdit(self)
-        self.textbox.move(15, 20)
+        self.textbox.move(15, 30)
         self.textbox.resize(280,40)
+        self.b1 = QtWidgets.QPushButton(self)
         self.b1.setText("MP4")
-        self.b1.move(110, 80)
+        self.b1.move(110, 90)
         self.b1.resize(80,40)
         self.b1.clicked.connect(self.b1click)
+        self.b2 = QtWidgets.QPushButton(self)
         self.b2.setText("MP3")
-        self.b2.move(110, 120)
+        self.b2.move(110, 130)
         self.b2.resize(80,40)
         self.b2.clicked.connect(self.b2click)
 
