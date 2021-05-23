@@ -29,16 +29,16 @@ class MainWindow(QMainWindow):
         self.b2.clicked.connect(self.b2click)
 
     def b1click(self):
-        self.b1.setText("OK !!!")
-        # self.download()
-        # self.update()
+        self.textcontent = self.textbox.text()
+        self.dld(self.textcontent)
+        self.b1.setText("Ok !!!!")
         
     def b2click(self):
         self.b2.setText("OK !!!")
 
-    # def download(self):
-    #     self.yt = YouTube(self.link)
-    #     self.yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first().download()
+    def dld(self, link):
+        yt = YouTube(link)
+        yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first().download()
 
 def window():
     # Window
