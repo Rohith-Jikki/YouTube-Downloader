@@ -1,13 +1,14 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QLabel
 import youtube_dl.YoutubeDL as YDL
-import sys, os
+import sys, os, subprocess
 
 ydl_audio_opts = {
             'noplaylist': True,
             'quiet': True,
             'no_warnings': True,
             'format': 'bestaudio/best',
+            'outtmpl': '%(title)s.%(ext)s',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
@@ -21,6 +22,7 @@ ydl_video_opts = {
             'no_warnings': True,
             'format': 'bestvideo+bestaudio/best',
             'videoformat' : "mp4",
+            'outtmpl': '%(title)s.%(ext)s',
         }
 
 class MainWindow(QMainWindow):
@@ -96,24 +98,22 @@ class MainWindow(QMainWindow):
     def dld(self, link):
         with YDL(ydl_video_opts) as ydl:
             info = ydl.extract_info(f'ytsearch:{link}', download=False)['entries'][0]
-            video_name = info.get('title', None)
             video_url = info.get("webpage_url")
             ydl.download([video_url])
             for file in os.listdir("./"):
-                if file.endswith(".mp4"):
-                    os.rename(file, f"{video_name}.mp4")
-                elif file.endswith(".mkv"):
-                    os.rename(file, f"{video_name}.mkv")
+                if file.endswith(".mp4") or file.endswith(".mkv"):
+                    file_path = os.path.abspath(f"./{file}")
+                    subprocess.call(f"explorer /select,{file_path}")
 
     def dldaudio(self, link):
         with YDL(ydl_audio_opts) as ydl:
             info = ydl.extract_info(f'ytsearch:{link}', download=False)['entries'][0]
-            video_name = info.get('title', None)
             video_url = info.get("webpage_url")
             ydl.download([video_url])
             for file in os.listdir("./"):
                 if file.endswith(".mp3"):
-                    os.rename(file, f"{video_name}.mp3")
+                    file_path = os.path.abspath(f"./{file}")
+                    subprocess.call(f"explorer /select,{file_path}")
 
 def window():
     # Window
