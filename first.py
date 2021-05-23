@@ -1,7 +1,25 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QLabel
-from pytube import YouTube
+import youtube_dl.YoutubeDL as YDL
 import sys
+
+ydl_audio_opts = {
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
+        }
+
+ydl_video_opts = {
+            'format': 'bestvideo+bestaudio/best',
+            'videoformat' : "mp4",
+            'postprocessors': [{
+                'key': 'FFmpegVideoConvertor',
+                'preferedformat': 'mp4',  # one of avi, flv, mkv, mp4, ogg, webm
+            }],
+        }
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -59,13 +77,12 @@ class MainWindow(QMainWindow):
 
     #Download Function
     def dld(self, link):
-        yt = YouTube(link)
-        yt.streams.filter(progressive=True, file_extension='mp4').get_highest_resolution().download()
+        with YDL(ydl_video_opts) as ydl:
+            ydl.download([link])
 
     def dldaudio(self, link):
-        yt = YouTube(link)
-        t=yt.streams.filter(only_audio=True).all()
-        t[0].download()
+        with YDL(ydl_audio_opts) as ydl:
+            ydl.download([link])
 
 def window():
     # Window
