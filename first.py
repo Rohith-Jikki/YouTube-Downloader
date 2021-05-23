@@ -41,8 +41,8 @@ class MainWindow(QMainWindow):
         fontin.setPointSize(11)
         #Label
         self.nameLabel = QLabel(self)
-        self.nameLabel.setText('Enter Link:')
-        self.nameLabel.setGeometry(QtCore.QRect(20, 50, 81, 31))
+        self.nameLabel.setText('Enter Link\nor Search:')
+        self.nameLabel.setGeometry(QtCore.QRect(20, 38, 81, 41))
         self.nameLabel.setFont(font)
         #TextBox
         self.textbox = QLineEdit(self)
@@ -79,18 +79,22 @@ class MainWindow(QMainWindow):
     #Download Function
     def dld(self, link):
         with YDL(ydl_video_opts) as ydl:
-            info = ydl.extract_info(link, download=False)
+            info = ydl.extract_info(f'ytsearch:{link}', download=False)['entries'][0]
             video_name = info.get('title', None)
-            ydl.download([link])
+            video_url = info.get("webpage_url")
+            ydl.download([video_url])
             for file in os.listdir("./"):
                 if file.endswith(".mp4"):
                     os.rename(file, f"{video_name}.mp4")
+                elif file.endswith(".mkv"):
+                    os.rename(file, f"{video_name}.mkv")
 
     def dldaudio(self, link):
         with YDL(ydl_audio_opts) as ydl:
-            info = ydl.extract_info(link, download=False)
+            info = ydl.extract_info(f'ytsearch:{link}', download=False)['entries'][0]
             video_name = info.get('title', None)
-            ydl.download([link])
+            video_url = info.get("webpage_url")
+            ydl.download([video_url])
             for file in os.listdir("./"):
                 if file.endswith(".mp3"):
                     os.rename(file, f"{video_name}.mp3")
