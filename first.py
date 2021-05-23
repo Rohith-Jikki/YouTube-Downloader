@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QLabel
 import youtube_dl.YoutubeDL as YDL
 import sys, os, subprocess
+from style import *
 
 ydl_audio_opts = {
             'noplaylist': True,
@@ -32,8 +33,8 @@ class MainWindow(QMainWindow):
         self.setFixedSize(620, 250)
         self.setWindowOpacity(1)
         self.setWindowTitle("YouTube Downloader")
-        self.setStyleSheet("color: black; background-color: rgb(35, 35, 35)")
         self.setWindowIcon(QtGui.QIcon('ytlogo.png'))
+        self.setStyleSheet(appStyle)
         self.initUI()
         
     def initUI(self):
@@ -51,11 +52,7 @@ class MainWindow(QMainWindow):
         self.textbox = QLineEdit(self)
         self.textbox.setGeometry(QtCore.QRect(200, 50, 401, 41))
         self.textbox.setFont(fontin)
-        self.textbox.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"border-radius:5px;\n"
-"border : solid #a0a0a0;\n"
-"border-width : 2px\n"
-"")
+        self.textbox.setStyleSheet(tstyle)
         ##Buttons
         #Button 1
         self.b1 = QtWidgets.QPushButton(self)
@@ -63,23 +60,13 @@ class MainWindow(QMainWindow):
         self.b1.setGeometry(QtCore.QRect(220, 110, 100, 50))
         self.b1.setFont(font)
         self.b1.clicked.connect(self.b1click)
-        self.b1.setStyleSheet("border-radius: 5px;\n"
-"border: solid #393939;\n"
-"border-width: 4px;\n"
-"background-color: #414141;\n"
-"color: white;\n"
-"")
+        self.b1.setStyleSheet(btn)
         #Button2
         self.b2 = QtWidgets.QPushButton(self)
         self.b2.setText("MP3")
         self.b2.setGeometry(QtCore.QRect(450, 110, 100, 50))
         self.b2.setFont(font)
-        self.b2.setStyleSheet("border-radius: 5px;\n"
-"border: solid #393939;\n"
-"border-width: 4px;\n"
-"background-color: #414141;\n"
-"color: white;\n"
-"")
+        self.b2.setStyleSheet(btn)
         self.b2.clicked.connect(self.b2click)  
 
     def b1click(self):
