@@ -27,6 +27,7 @@ class MainWindow(QMainWindow):
         self.b2.move(110, 130)
         self.b2.resize(80,40)
         self.b2.clicked.connect(self.b2click)
+        
 
     def b1click(self):
         self.textcontent = self.textbox.text()
@@ -34,11 +35,19 @@ class MainWindow(QMainWindow):
         self.b1.setText("Ok !!!!")
         
     def b2click(self):
+        self.textcontent = self.textbox.text()
+        self.dldaudio(self.textcontent)
         self.b2.setText("OK !!!")
 
+    #Download Function
     def dld(self, link):
         yt = YouTube(link)
         yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first().download()
+
+    def dldaudio(self, link):
+        yt = YouTube(link)
+        t=yt.streams.filter(only_audio=True).all()
+        t[0].download()
 
 def window():
     # Window
