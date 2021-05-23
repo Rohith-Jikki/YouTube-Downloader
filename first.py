@@ -1,5 +1,5 @@
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QFormLayout, QLineEdit, QMainWindow, QLabel
+from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QLabel
 from pytube import YouTube
 import sys
 
@@ -7,37 +7,55 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setGeometry(200, 200, 300, 300)
+        self.setFixedSize(500, 250)
+        self.setWindowOpacity(1)
         self.setWindowTitle("YouTube Downloader")
+        self.setStyleSheet("color: white; background-color: rgb(32, 34, 37)")
+        self.setWindowIcon(QtGui.QIcon('ytlogo.png'))
         self.initUI()
         
     def initUI(self):
+        fontin = QtGui.QFont()
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        fontin.setPointSize(11)
+        #Label
         self.nameLabel = QLabel(self)
         self.nameLabel.setText('Enter Link:')
-        self.nameLabel.move(0, 0)
+        self.nameLabel.setGeometry(QtCore.QRect(20, 50, 81, 31))
+        self.nameLabel.setFont(font)
+        #TextBox
         self.textbox = QLineEdit(self)
-        self.textbox.move(15, 30)
-        self.textbox.resize(280,40)
+        self.textbox.setGeometry(QtCore.QRect(110, 40, 371, 41))
+        self.textbox.setFont(fontin)
+        ##Buttons
+        #Button 1
         self.b1 = QtWidgets.QPushButton(self)
         self.b1.setText("MP4")
-        self.b1.move(110, 90)
-        self.b1.resize(80,40)
+        self.b1.setGeometry(QtCore.QRect(160, 110, 101, 51))
+        self.b1.setFont(font)
         self.b1.clicked.connect(self.b1click)
+        self.b1.setStyleSheet("background-color: rgb(54, 57, 63)")
+        #Button2
         self.b2 = QtWidgets.QPushButton(self)
         self.b2.setText("MP3")
-        self.b2.move(110, 130)
-        self.b2.resize(80,40)
+        self.b2.setGeometry(QtCore.QRect(350, 110, 111, 51))
+        self.b2.setFont(font)
+        self.b2.setStyleSheet("background-color: rgb(54, 57, 63)")
         self.b2.clicked.connect(self.b2click)
         
 
     def b1click(self):
         self.textcontent = self.textbox.text()
-        self.dld(self.textcontent)
-        self.b1.setText("Ok !!!!")
+        if self.textcontent:
+            self.dld(self.textcontent)
+            self.b1.setText("Ok !!!!")
         
     def b2click(self):
         self.textcontent = self.textbox.text()
-        self.dldaudio(self.textcontent)
-        self.b2.setText("OK !!!")
+        if self.textcontent:
+            self.dldaudio(self.textcontent)
+            self.b2.setText("OK !!!")
 
     #Download Function
     def dld(self, link):
