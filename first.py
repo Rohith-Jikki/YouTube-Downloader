@@ -60,7 +60,7 @@ class MainWindow(QMainWindow):
     #Download Function
     def dld(self, link):
         yt = YouTube(link)
-        yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first().download()
+        yt.streams.filter(progressive=True, file_extension='mp4').get_highest_resolution().download()
 
     def dldaudio(self, link):
         yt = YouTube(link)
