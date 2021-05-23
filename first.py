@@ -4,6 +4,9 @@ import youtube_dl.YoutubeDL as YDL
 import sys
 
 ydl_audio_opts = {
+            'noplaylist': True,
+            'quiet': True,
+            'no_warnings': True,
             'format': 'bestaudio/best',
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
@@ -13,12 +16,11 @@ ydl_audio_opts = {
         }
 
 ydl_video_opts = {
+            'noplaylist': True,
+            'quiet': True,
+            'no_warnings': True,
             'format': 'bestvideo+bestaudio/best',
             'videoformat' : "mp4",
-            'postprocessors': [{
-                'key': 'FFmpegVideoConvertor',
-                'preferedformat': 'mp4',  # one of avi, flv, mkv, mp4, ogg, webm
-            }],
         }
 
 class MainWindow(QMainWindow):
