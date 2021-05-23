@@ -27,10 +27,10 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setGeometry(200, 200, 300, 300)
-        self.setFixedSize(500, 250)
+        self.setFixedSize(620, 250)
         self.setWindowOpacity(1)
         self.setWindowTitle("YouTube Downloader")
-        self.setStyleSheet("color: white; background-color: rgb(32, 34, 37)")
+        self.setStyleSheet("color: black; background-color: rgb(35, 35, 35)")
         self.setWindowIcon(QtGui.QIcon('ytlogo.png'))
         self.initUI()
         
@@ -41,27 +41,43 @@ class MainWindow(QMainWindow):
         fontin.setPointSize(11)
         #Label
         self.nameLabel = QLabel(self)
-        self.nameLabel.setText('Enter Link\nor Search:')
-        self.nameLabel.setGeometry(QtCore.QRect(20, 38, 81, 41))
+        self.nameLabel.setText('Enter Link or Search:')
+        self.nameLabel.setGeometry(QtCore.QRect(10, 50, 181, 41))
         self.nameLabel.setFont(font)
+        self.nameLabel.setStyleSheet("color:white;")
         #TextBox
         self.textbox = QLineEdit(self)
-        self.textbox.setGeometry(QtCore.QRect(110, 40, 371, 41))
+        self.textbox.setGeometry(QtCore.QRect(200, 50, 401, 41))
         self.textbox.setFont(fontin)
+        self.textbox.setStyleSheet("background-color: rgb(255, 255, 255);\n"
+"border-radius:5px;\n"
+"border : solid #a0a0a0;\n"
+"border-width : 2px\n"
+"")
         ##Buttons
         #Button 1
         self.b1 = QtWidgets.QPushButton(self)
         self.b1.setText("MP4")
-        self.b1.setGeometry(QtCore.QRect(160, 110, 101, 51))
+        self.b1.setGeometry(QtCore.QRect(220, 110, 100, 50))
         self.b1.setFont(font)
         self.b1.clicked.connect(self.b1click)
-        self.b1.setStyleSheet("background-color: rgb(54, 57, 63)")
+        self.b1.setStyleSheet("border-radius: 5px;\n"
+"border: solid #393939;\n"
+"border-width: 4px;\n"
+"background-color: #414141;\n"
+"color: white;\n"
+"")
         #Button2
         self.b2 = QtWidgets.QPushButton(self)
         self.b2.setText("MP3")
-        self.b2.setGeometry(QtCore.QRect(350, 110, 111, 51))
+        self.b2.setGeometry(QtCore.QRect(450, 110, 100, 50))
         self.b2.setFont(font)
-        self.b2.setStyleSheet("background-color: rgb(54, 57, 63)")
+        self.b2.setStyleSheet("border-radius: 5px;\n"
+"border: solid #393939;\n"
+"border-width: 4px;\n"
+"background-color: #414141;\n"
+"color: white;\n"
+"")
         self.b2.clicked.connect(self.b2click)  
 
     def b1click(self):
