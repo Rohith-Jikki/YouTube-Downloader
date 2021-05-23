@@ -30,7 +30,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setGeometry(200, 200, 300, 300)
-        self.setFixedSize(620, 250)
+        self.setFixedSize(650, 270)
         self.setWindowOpacity(1)
         self.setWindowTitle("YouTube Downloader")
         self.setWindowIcon(QtGui.QIcon('ytlogo.png'))
@@ -50,7 +50,7 @@ class MainWindow(QMainWindow):
         self.nameLabel.setStyleSheet("color:white;")
         #TextBox
         self.textbox = QLineEdit(self)
-        self.textbox.setGeometry(QtCore.QRect(200, 50, 401, 41))
+        self.textbox.setGeometry(QtCore.QRect(200, 50, 450, 41))
         self.textbox.setFont(fontin)
         self.textbox.setStyleSheet(tstyle)
         ##Buttons
