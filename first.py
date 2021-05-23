@@ -71,12 +71,14 @@ class MainWindow(QMainWindow):
 
     def b1click(self):
         self.textcontent = self.textbox.text()
+        self.b1.setStyleSheet(btnc)
         if self.textcontent:
             self.dld(self.textcontent)
             self.b1.setText("Ok !!!!")
 
     def b2click(self):
         self.textcontent = self.textbox.text()
+        self.b2.setStyleSheet(btnc)
         if self.textcontent:
             self.dldaudio(self.textcontent)
             self.b2.setText("OK !!!")

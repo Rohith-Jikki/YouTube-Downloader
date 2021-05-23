@@ -11,7 +11,13 @@ border-width: 4px;
 background-color: #414141;
 color: white;
 """
-
+btnc = """
+border-radius: 5px;
+border: solid #414141;
+border-width: 4px;
+background-color: #393939;
+color: white;
+"""
 tstyle = """
 background-color: rgb(255, 255, 255);
 border-radius:5px;
