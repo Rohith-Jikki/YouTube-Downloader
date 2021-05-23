@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QLabel
 import youtube_dl.YoutubeDL as YDL
-import sys
+import sys, os
 
 ydl_audio_opts = {
             'noplaylist': True,
@@ -62,15 +62,14 @@ class MainWindow(QMainWindow):
         self.b2.setGeometry(QtCore.QRect(350, 110, 111, 51))
         self.b2.setFont(font)
         self.b2.setStyleSheet("background-color: rgb(54, 57, 63)")
-        self.b2.clicked.connect(self.b2click)
-        
+        self.b2.clicked.connect(self.b2click)  
 
     def b1click(self):
         self.textcontent = self.textbox.text()
         if self.textcontent:
             self.dld(self.textcontent)
             self.b1.setText("Ok !!!!")
-        
+
     def b2click(self):
         self.textcontent = self.textbox.text()
         if self.textcontent:
@@ -80,11 +79,21 @@ class MainWindow(QMainWindow):
     #Download Function
     def dld(self, link):
         with YDL(ydl_video_opts) as ydl:
+            info = ydl.extract_info(link, download=False)
+            video_name = info.get('title', None)
             ydl.download([link])
+            for file in os.listdir("./"):
+                if file.endswith(".mp4"):
+                    os.rename(file, f"{video_name}.mp4")
 
     def dldaudio(self, link):
         with YDL(ydl_audio_opts) as ydl:
+            info = ydl.extract_info(link, download=False)
+            video_name = info.get('title', None)
             ydl.download([link])
+            for file in os.listdir("./"):
+                if file.endswith(".mp3"):
+                    os.rename(file, f"{video_name}.mp3")
 
 def window():
     # Window
