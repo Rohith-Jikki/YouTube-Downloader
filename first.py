@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QLabel
 import youtube_dl.YoutubeDL as YDL
 import sys, os, subprocess
 from style import *
+from threading import Thread
 
 ydl_audio_opts = {
             'noplaylist': True,
@@ -42,78 +43,63 @@ class MainWindow(QMainWindow):
         font = QtGui.QFont()
         font.setPointSize(12)
         fontin.setPointSize(11)
-        #Progress Bar
+
+        # Progress Bar
         self.progressBar = QtWidgets.QProgressBar(self)
         self.progressBar.setGeometry(QtCore.QRect(230, 190, 241, 21))
         self.progressBar.setProperty("value", 20)
 
-        #Label
-        self.nameLabel = QLabel(self)
-        self.nameLabel.setText('Enter Link or Search:')
+        # Label
+        self.nameLabel = QLabel(self, text='Enter Link or Search:')
         self.nameLabel.setGeometry(QtCore.QRect(10, 50, 181, 41))
         self.nameLabel.setFont(font)
         self.nameLabel.setStyleSheet("color:white;")
-        #TextBox
+
+        # TextBox
         self.textbox = QLineEdit(self)
         self.textbox.setGeometry(QtCore.QRect(200, 50, 450, 41))
         self.textbox.setFont(fontin)
         self.textbox.setStyleSheet(tstyle)
-        ##Buttons
-        #Button 1
-        self.b1 = QtWidgets.QPushButton(self)
-        self.b1.setText("MP4")
+
+        # Buttons
+
+        # Button 1
+        self.b1 = QtWidgets.QPushButton(self, text="MP4")
         self.b1.setGeometry(QtCore.QRect(220, 110, 100, 50))
         self.b1.setFont(font)
-        self.b1.clicked.connect(self.b1click)
+        self.b1.clicked.connect(lambda: self.button_click(self.b1, 'video'))
         self.b1.setStyleSheet(btn)
-        #Button2
-        self.b2 = QtWidgets.QPushButton(self)
-        self.b2.setText("MP3")
+
+        # Button 2
+        self.b2 = QtWidgets.QPushButton(self, text="MP3")
         self.b2.setGeometry(QtCore.QRect(450, 110, 100, 50))
         self.b2.setFont(font)
         self.b2.setStyleSheet(btn)
-        self.b2.clicked.connect(self.b2click)  
+        self.b2.clicked.connect(lambda: self.button_click(self.b2, 'audio'))  
 
-    def b1click(self):
-        self.textcontent = self.textbox.text()
-        self.b1.setStyleSheet(btnc)
-        if self.textcontent:
-            self.dld(self.textcontent)
-            self.b1.setText("Ok !!!!")
+    def button_click(self, button, type):
+        videoname = self.textbox.text()
+        button.setStyleSheet(btnc)
+        if videoname:
+            # Start a download thread
+            Thread(target=self.download, args=(videoname, type)).start()
+            button.setText("OK")
 
-    def b2click(self):
-        self.textcontent = self.textbox.text()
-        self.b2.setStyleSheet(btnc)
-        if self.textcontent:
-            self.dldaudio(self.textcontent)
-            self.b2.setText("OK !!!")
-
-    #Download Function
-    def dld(self, link):
-        with YDL(ydl_video_opts) as ydl:
+    # Download Function   
+    def download(self, link, type="video"):
+        opts = ydl_video_opts if type == "video" else ydl_audio_opts
+        with YDL(opts) as ydl:
             info = ydl.extract_info(f'ytsearch:{link}', download=False)['entries'][0]
             video_url = info.get("webpage_url")
             ydl.download([video_url])
             for file in os.listdir("./"):
-                if file.endswith(".mp4") or file.endswith(".mkv"):
+                if (type == "video" and file.endswith((".mp4", ".mkv"))) or (type == "audio" and file.endswith(".mp3")):
                     file_path = os.path.abspath(f"./{file}")
                     subprocess.call(f"explorer /select,{file_path}")
 
-    def dldaudio(self, link):
-        with YDL(ydl_audio_opts) as ydl:
-            info = ydl.extract_info(f'ytsearch:{link}', download=False)['entries'][0]
-            video_url = info.get("webpage_url")
-            ydl.download([video_url])
-            for file in os.listdir("./"):
-                if file.endswith(".mp3"):
-                    file_path = os.path.abspath(f"./{file}")
-                    subprocess.call(f"explorer /select,{file_path}")
 
-def window():
-    # Window
+if __name__ == '__main__':
     app = QApplication(sys.argv)
     win = MainWindow()
     win.show()
-    sys.exit(app.exec_())
-
-window()
+    sys.exit(app.exec())
