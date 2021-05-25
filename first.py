@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QLabel
 import youtube_dl.YoutubeDL as YDL
-import sys, os, subprocess
+import sys, os, subprocess, time
 from style import *
 from threading import Thread
 
@@ -85,6 +85,15 @@ class MainWindow(QMainWindow):
             Thread(target=self.download, args=(videoname, type)).start()
             button.setText("OK")
 
+    # Search
+    def search(self, link):
+        with YDL(ydl_video_opts) as ydl:
+            info = ydl.extract_info(f'ytsearch:{link}', download=False)['entries'][0]
+            self.video_url = info.get("webpage_url")
+            self.video_title = info.get('title', None)
+            self.video_thumb = info.get("thumbnail")
+            self.video_duration = time.strftime('%M:%S', time.gmtime(info.get("duration")))
+
     # Download Function   
     def download(self, link, type="video"):
         opts = ydl_video_opts if type == "video" else ydl_audio_opts
@@ -96,7 +105,6 @@ class MainWindow(QMainWindow):
                 if (type == "video" and file.endswith((".mp4", ".mkv"))) or (type == "audio" and file.endswith(".mp3")):
                     file_path = os.path.abspath(f"./{file}")
                     subprocess.call(f"explorer /select,{file_path}")
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
