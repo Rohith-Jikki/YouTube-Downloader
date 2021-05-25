@@ -44,11 +44,6 @@ class MainWindow(QMainWindow):
         font.setPointSize(12)
         fontin.setPointSize(11)
 
-        # Progress Bar
-        self.progressBar = QtWidgets.QProgressBar(self)
-        self.progressBar.setGeometry(QtCore.QRect(230, 190, 241, 21))
-        self.progressBar.setProperty("value", 20)
-
         # Label
         self.nameLabel = QLabel(self, text='Enter Link or Search:')
         self.nameLabel.setGeometry(QtCore.QRect(10, 50, 181, 41))
