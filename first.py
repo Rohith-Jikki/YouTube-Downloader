@@ -1,8 +1,10 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QLabel
 import youtube_dl.YoutubeDL as YDL
-import sys, os, subprocess, time
+import sys, os, time, shutil
 from style import *
+from tkinter import filedialog
+from tkinter import *
 from threading import Thread
 
 ydl_audio_opts = {
@@ -99,7 +101,14 @@ class MainWindow(QMainWindow):
             for file in os.listdir("./"):
                 if (type == "video" and file.endswith((".mp4", ".mkv"))) or (type == "audio" and file.endswith(".mp3")):
                     file_path = os.path.abspath(f"./{file}")
-                    subprocess.call(f"explorer /select,{file_path}")
+                    MainWindow.move_file(self, file_path)
+
+    # Move Downloaded file
+    def move_file(self, file_path):
+        root = Tk()
+        root.withdraw()
+        destination = filedialog.askdirectory()
+        shutil.move(file_path, destination)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
