@@ -108,6 +108,7 @@ class MainWindow(QMainWindow):
         root = Tk()
         root.withdraw()
         destination = filedialog.askdirectory()
+        root.destroy()
         shutil.move(file_path, destination)
 
 if __name__ == '__main__':
