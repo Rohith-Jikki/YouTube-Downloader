@@ -99,7 +99,7 @@ class MainWindow(QMainWindow):
             video_url = info.get("webpage_url")
             ydl.download([video_url])
             for file in os.listdir("./"):
-                if (type == "video" and file.endswith((".mp4", ".mkv"))) or (type == "audio" and file.endswith(".mp3")):
+                if (type == "video" and file.endswith((".mp4", ".mkv", ".webm"))) or (type == "audio" and file.endswith(".mp3")):
                     file_path = os.path.abspath(f"./{file}")
                     MainWindow.move_file(self, file_path)
 
