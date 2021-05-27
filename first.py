@@ -32,12 +32,13 @@ ydl_video_opts = {
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.setGeometry(200, 200, 300, 300)
-        self.setFixedSize(650, 270)
+        self.setGeometry(200, 200, 651, 395)
+        self.setFixedSize(651, 395)
         self.setWindowOpacity(1)
         self.setWindowTitle("YouTube Downloader")
         self.setWindowIcon(QtGui.QIcon('ytlogo.png'))
         self.setStyleSheet(appStyle)
+
         self.initUI()
         
     def initUI(self):
@@ -48,48 +49,66 @@ class MainWindow(QMainWindow):
 
         # Label
         self.nameLabel = QLabel(self, text='Enter Link or Search:')
-        self.nameLabel.setGeometry(QtCore.QRect(10, 50, 181, 41))
+        self.nameLabel.setGeometry(QtCore.QRect(240, 18, 172, 46))
         self.nameLabel.setFont(font)
         self.nameLabel.setStyleSheet("color:white;")
 
         # TextBox
         self.textbox = QLineEdit(self)
-        self.textbox.setGeometry(QtCore.QRect(200, 50, 450, 41))
+        self.textbox.setGeometry(QtCore.QRect(33, 73, 495, 50))
         self.textbox.setFont(fontin)
         self.textbox.setStyleSheet(tstyle)
 
+        #TextEdit
+        self.textEdit = QtWidgets.QTextEdit(self)
+        self.textEdit.setGeometry(QtCore.QRect(33, 142, 603, 125))
+        self.textEdit.setStyleSheet(tstyle)
+
+        #ComboBox
+        self.comboBox = QtWidgets.QComboBox(self)
+        self.comboBox.setGeometry(QtCore.QRect(33, 286, 190, 32))
+        self.comboBox.setStyleSheet(tstyle)
+        self.options = ["video", "audio"]
+        self.comboBox.addItems(self.options)
         # Buttons
 
         # Button 1
-        self.b1 = QtWidgets.QPushButton(self, text="MP4")
-        self.b1.setGeometry(QtCore.QRect(220, 110, 100, 50))
+        self.b1 = QtWidgets.QPushButton(self, text="Search")
+        self.b1.setGeometry(QtCore.QRect(536, 73, 100, 50))
         self.b1.setFont(font)
-        self.b1.clicked.connect(lambda: self.button_click(self.b1, 'video'))
+        # self.b1.clicked.connect(lambda: self.button_click(self.b1, 'video'))
+        self.b1.clicked.connect(lambda: self.button_click(self.b1, 'search'))
         self.b1.setStyleSheet(btn)
 
         # Button 2
-        self.b2 = QtWidgets.QPushButton(self, text="MP3")
-        self.b2.setGeometry(QtCore.QRect(450, 110, 100, 50))
+        self.b2 = QtWidgets.QPushButton(self, text="Download")
+        self.b2.setGeometry(QtCore.QRect(276, 326, 100, 50))
         self.b2.setFont(font)
         self.b2.setStyleSheet(btn)
-        self.b2.clicked.connect(lambda: self.button_click(self.b2, 'audio'))  
+        self.b2.clicked.connect(lambda: self.button_click(self.b2, 'download'))  
 
     def button_click(self, button, type):
-        videoname = self.textbox.text()
+        self.videoname = self.textbox.text()
         button.setStyleSheet(btnc)
-        if videoname:
+        if type == 'search':
+            self.search()
+        else:
             # Start a download thread
-            Thread(target=self.download, args=(videoname, type)).start()
+            type = self.options[self.comboBox.currentIndex()]
+            Thread(target=self.download, args=(self.videoname, type)).start()
             button.setText("OK")
 
     # Search
-    def search(self, link):
+    def search(self):
+        link = self.videoname
         with YDL(ydl_video_opts) as ydl:
             info = ydl.extract_info(f'ytsearch:{link}', download=False)['entries'][0]
             self.video_url = info.get("webpage_url")
             self.video_title = info.get('title', None)
             self.video_thumb = info.get("thumbnail")
             self.video_duration = time.strftime('%M:%S', time.gmtime(info.get("duration")))
+        self.textEdit.setHtml(f"<p>{self.video_url}</p> <p>{self.video_title}</p> <p>{self.video_duration}</p>")
+        
 
     # Download Function   
     def download(self, link, type="video"):
