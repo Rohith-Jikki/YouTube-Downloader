@@ -6,6 +6,7 @@ from style import *
 from tkinter import filedialog
 from tkinter import *
 from threading import Thread
+import urllib
 
 ydl_audio_opts = {
             'noplaylist': True,
@@ -61,8 +62,14 @@ class MainWindow(QMainWindow):
 
         #TextEdit
         self.textEdit = QtWidgets.QTextEdit(self)
-        self.textEdit.setGeometry(QtCore.QRect(33, 142, 603, 125))
+        self.textEdit.setGeometry(QtCore.QRect(33, 142, 379, 125))
         self.textEdit.setStyleSheet(tstyle)
+
+        #Thumbnail
+        self.thumbnail = QLabel(self, text = 'Test')
+        self.thumbnail.setGeometry(430, 142,379, 125 )
+        self.pixmap = QtGui.QPixmap('ytlogo.png')
+        self.thumbnail.setPixmap(self.pixmap)
 
         #ComboBox
         self.comboBox = QtWidgets.QComboBox(self)
@@ -107,7 +114,11 @@ class MainWindow(QMainWindow):
             self.video_title = info.get('title', None)
             self.video_thumb = info.get("thumbnail")
             self.video_duration = time.strftime('%M:%S', time.gmtime(info.get("duration")))
-        self.textEdit.setHtml(f"<p>{self.video_url}</p> <p>{self.video_title}</p> <p>{self.video_duration}</p>")
+        self.textEdit.setHtml(f"<p><b>Link: </b>{self.video_url}</p> <p><b>Title: </b>{self.video_title}</p> <p><b>Duration: </b>{self.video_duration}</p>")
+        data = urllib.request.urlopen(self.video_thumb).read()
+        self.pixmap.loadFromData(data)
+        self.pixmap_rescaled = self.pixmap.scaled(211, 125, QtCore.Qt.KeepAspectRatio)
+        self.thumbnail.setPixmap(self.pixmap_rescaled)
         
 
     # Download Function   
