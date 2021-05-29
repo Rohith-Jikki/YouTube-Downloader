@@ -112,8 +112,10 @@ class MainWindow(QMainWindow):
             info = ydl.extract_info(f'ytsearch:{link}', download=False)['entries'][0]
             self.video_url = info.get("webpage_url")
             self.video_title = info.get('title', None)
+            self.video_uploader = info.get('channel', None)
             self.video_thumb = info.get("thumbnail")
             self.video_duration = time.strftime('%M:%S', time.gmtime(info.get("duration")))
+            self.video_views = MainWindow.human_format(info.get('view_count'))
         self.textEdit.setHtml(f"<style>a{{color: white; text-decoration: none;}}</style><a href =\"{self.video_url}\"><h3>{self.video_title}</h3></a> <p><b>Duration: </b>{self.video_duration}</p>")
         self.textEdit.setOpenExternalLinks(True)
         data = urllib.request.urlopen(self.video_thumb).read()
@@ -142,6 +144,15 @@ class MainWindow(QMainWindow):
         if destination:    
             root.destroy()
             shutil.move(file_path, destination)
+
+    # Human Format
+    def human_format(num):
+        num = float('{:.3g}'.format(num))
+        magnitude = 0
+        while abs(num) >= 1000:
+            magnitude += 1
+            num /= 1000.0
+        return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
