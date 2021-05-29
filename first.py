@@ -61,14 +61,14 @@ class MainWindow(QMainWindow):
         self.textbox.setStyleSheet(tstyle)
 
         #TextEdit
-        self.textEdit = QtWidgets.QTextEdit(self)
-        self.textEdit.setGeometry(QtCore.QRect(33, 142, 379, 125))
-        self.textEdit.setStyleSheet(tstyle)
+        self.textEdit = QtWidgets.QTextBrowser(self)
+        self.textEdit.setGeometry(QtCore.QRect(244, 142, 392, 125))
+        self.textEdit.setStyleSheet(serachStyle)
 
         #Thumbnail
         self.thumbnail = QLabel(self, text = 'Test')
-        self.thumbnail.setGeometry(430, 142,379, 125 )
-        self.pixmap = QtGui.QPixmap('ytlogo.png')
+        self.thumbnail.setGeometry(33, 142,379, 125 )
+        self.pixmap = QtGui.QPixmap()
         self.thumbnail.setPixmap(self.pixmap)
 
         #ComboBox
@@ -114,7 +114,8 @@ class MainWindow(QMainWindow):
             self.video_title = info.get('title', None)
             self.video_thumb = info.get("thumbnail")
             self.video_duration = time.strftime('%M:%S', time.gmtime(info.get("duration")))
-        self.textEdit.setHtml(f"<p><b>Link: </b>{self.video_url}</p> <p><b>Title: </b>{self.video_title}</p> <p><b>Duration: </b>{self.video_duration}</p>")
+        self.textEdit.setHtml(f"<style>a{{color: white; text-decoration: none;}}</style><a href =\"{self.video_url}\"><h3>{self.video_title}</h3></a> <p><b>Duration: </b>{self.video_duration}</p>")
+        self.textEdit.setOpenExternalLinks(True)
         data = urllib.request.urlopen(self.video_thumb).read()
         self.pixmap.loadFromData(data)
         self.pixmap_rescaled = self.pixmap.scaled(211, 125, QtCore.Qt.KeepAspectRatio)

@@ -25,3 +25,10 @@ border : solid #a0a0a0;
 border-width : 2px
 """
 
+serachStyle = """
+    background-color: #2f3136;
+    color: white;
+    border-radius:5px;
+    border : solid #a0a0a0;
+    border-width : 2px
+"""
