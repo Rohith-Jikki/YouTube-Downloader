@@ -1,3 +1,4 @@
+import asyncio
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QLabel
 import youtube_dl.YoutubeDL as YDL
@@ -6,6 +7,8 @@ from style import *
 from tkinter import filedialog
 from tkinter import *
 from threading import Thread
+from multiprocessing.pool import ThreadPool
+import concurrent.futures
 import urllib
 
 ydl_audio_opts = {
@@ -39,8 +42,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("YouTube Downloader")
         self.setWindowIcon(QtGui.QIcon('ytlogo.png'))
         self.setStyleSheet(appStyle)
-
         self.initUI()
+    
         
     def initUI(self):
         fontin = QtGui.QFont()
@@ -98,31 +101,29 @@ class MainWindow(QMainWindow):
         self.videoname = self.textbox.text()
         button.setStyleSheet(btnc)
         if type == 'search':
-            self.search()
+            if self.videoname != '':
+                self.worker = Worker(self.videoname)
+                self.worker.data.connect(self.handleData)
+                self.worker.start()
         else:
             # Start a download thread
             type = self.options[self.comboBox.currentIndex()]
             Thread(target=self.download, args=(self.videoname, type)).start()
             button.setText("OK")
-
-    # Search
-    def search(self):
-        link = self.videoname
-        with YDL(ydl_video_opts) as ydl:
-            info = ydl.extract_info(f'ytsearch:{link}', download=False)['entries'][0]
-            self.video_url = info.get("webpage_url")
-            self.video_title = info.get('title', None)
-            self.video_uploader = info.get('channel', None)
-            self.video_thumb = info.get("thumbnail")
-            self.video_duration = time.strftime('%M:%S', time.gmtime(info.get("duration")))
-            self.video_views = MainWindow.human_format(info.get('view_count'))
+    
+    def handleData(self, info):
+        self.video_url = info.get("webpage_url")
+        self.video_title = info.get('title', None)
+        self.video_uploader = info.get('channel', None)
+        self.video_thumb = info.get("thumbnail")
+        self.video_duration = time.strftime('%M:%S', time.gmtime(info.get("duration")))
+        self.video_views = MainWindow.human_format(info.get('view_count'))
         self.textEdit.setHtml(f"<style>a{{color: white; text-decoration: none;}}</style><a href =\"{self.video_url}\"><h3>{self.video_title}</h3></a> <p><b>Duration: </b>{self.video_duration}</p>")
         self.textEdit.setOpenExternalLinks(True)
         data = urllib.request.urlopen(self.video_thumb).read()
         self.pixmap.loadFromData(data)
         self.pixmap_rescaled = self.pixmap.scaled(211, 125, QtCore.Qt.KeepAspectRatio)
         self.thumbnail.setPixmap(self.pixmap_rescaled)
-        
 
     # Download Function   
     def download(self, link, type="video"):
@@ -154,8 +155,22 @@ class MainWindow(QMainWindow):
             num /= 1000.0
         return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
 
+class Worker(QtCore.QThread):
+    data = QtCore.pyqtSignal(object)
+
+    def __init__(self, query):
+        super(Worker, self).__init__()
+        self.query = query
+
+    def run(self):
+        info = None
+        with YDL(ydl_video_opts) as ydl:
+            info = ydl.extract_info(f'ytsearch:{self.query}', download=False)['entries'][0]
+            self.data.emit(info)
+            info = None  
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     win = MainWindow()
     win.show()
-    sys.exit(app.exec())
+    sys.exit(app.exec())    
